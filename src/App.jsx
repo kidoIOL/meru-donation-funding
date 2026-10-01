@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+const PAYSTACK_PUBLIC_KEY = import.meta.env.PAYSTACK_PUBLIC_KEY;
 const causes = [
   { name: "Tuition & fees", icon: "▣", description: "Keep a student enrolled and learning." },
   { name: "Medical care", icon: "＋", description: "Help cover treatment and recovery." },
@@ -53,7 +53,7 @@ function DonationForm({ cause }) {
       setIsError(true); setMessage("Please enter a donation greater than KES 5."); return;
     }
     if (!PAYSTACK_PUBLIC_KEY || !PAYSTACK_PUBLIC_KEY.startsWith("pk_")) {
-      setIsError(true); setMessage("Paystack public key is missing. Add VITE_PAYSTACK_PUBLIC_KEY in Vercel and redeploy."); return;
+      setIsError(true); setMessage("Paystack public key is missing. Add PAYSTACK_PUBLIC_KEY in Vercel and redeploy."); return;
     }
     if (!window.PaystackPop) {
       setIsError(true); setMessage("Paystack could not load. Check your connection and try again."); return;
