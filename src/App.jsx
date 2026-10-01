@@ -52,8 +52,11 @@ function DonationForm({ cause }) {
     if (!Number.isFinite(numericAmount) || numericAmount <= 5) {
       setIsError(true); setMessage("Please enter a donation greater than KES 5."); return;
     }
-    if (!PAYSTACK_PUBLIC_KEY || !window.PaystackPop) {
-      setIsError(true); setMessage("Payment service is unavailable. Please try again shortly."); return;
+    if (!PAYSTACK_PUBLIC_KEY || !PAYSTACK_PUBLIC_KEY.startsWith("pk_")) {
+      setIsError(true); setMessage("Paystack public key is missing. Add VITE_PAYSTACK_PUBLIC_KEY in Vercel and redeploy."); return;
+    }
+    if (!window.PaystackPop) {
+      setIsError(true); setMessage("Paystack could not load. Check your connection and try again."); return;
     }
     const handler = window.PaystackPop.setup({ key: PAYSTACK_PUBLIC_KEY, email: donorEmail, amount: Math.round(numericAmount * 100), currency: "KES", ref: `MERU-${Date.now()}`, metadata: { custom_fields: [{ display_name: "Cause", variable_name: "cause", value: cause.name }, { display_name: "Donor", variable_name: "donor", value: isAnonymous ? "Anonymous" : donorName }, { display_name: "M-PESA phone", variable_name: "phone", value: donorPhone }] }, callback: (response) => { setIsError(false); setMessage(`Thank you. Your donation was received. Reference: ${response.reference}`); }, onClose: () => { setIsError(false); setMessage("Payment window closed. Your donation has not been charged."); } });
     handler.openIframe();
